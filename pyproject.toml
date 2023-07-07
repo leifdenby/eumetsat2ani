@@ -1,0 +1,16 @@
+
+[project]
+name = "eumetsat2ani"
+version = "0.1.0"
+description = "Create animations directly from EUMETSAT data"
+authors = [
+    {name = "Leif Denby", email = "lcd@dmi.dk"},
+]
+dependencies = []
+requires-python = ">=3.9"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
