@@ -64,6 +64,7 @@ def download_source_files(
         fp_local_guess = root_data_path / f"{prod_identifier}.zip"
         if fp_local_guess.exists():
             logger.info(f"Skipping {fp_local_guess} as it already exists")
+            local_filepaths.append(fp_local_guess)
             continue
 
         with product.open() as fsrc:
@@ -75,6 +76,8 @@ def download_source_files(
                     shutil.copyfileobj(fsrc, fdst)
                     logger.info(f"Downloaded {local_filepath}")
                     local_filepaths.append(local_filepath)
+
+    return local_filepaths
 
 
 if __name__ == "__main__":

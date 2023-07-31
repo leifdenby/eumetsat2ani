@@ -12,6 +12,7 @@ dependencies = [
     "loguru>=0.7.0",
     "satpy>=0.43.0",
     "isodate>=0.6.1",
+    "imageio>=2.31.1",
 ]
 requires-python = ">=3.9"
 readme = "README.md"

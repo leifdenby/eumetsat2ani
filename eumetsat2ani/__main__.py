@@ -6,7 +6,7 @@ from loguru import logger
 from satpy.resample import get_area_def
 
 from .fetch import download_source_files
-from .render import render_scenes
+from .render import create_animation, render_scenes
 from .utils import optional_debugging
 
 
@@ -57,7 +57,24 @@ argparser.add_argument(
 argparser.add_argument(
     "--launch-ipdb-on-error", action="store_true", help="Launch ipdb on error"
 )
+argparser.add_argument(
+    "--frame-duration",
+    type=float,
+    default=0.5,
+    help="Duration of each frame in seconds",
+)
+
 args = argparser.parse_args()
+
+name_parts = [
+    args.product,
+    args.collection_name.replace(":", "_"),
+    args.t_start.isoformat().replace(":", "-"),
+    args.t_end.isoformat().replace(":", "-"),
+    "gif",
+]
+
+fp_animation_out = args.root_data_path / ".".join(name_parts)
 
 with optional_debugging(with_debugger=args.launch_ipdb_on_error):
     # load area definition from satpy
@@ -79,4 +96,10 @@ with optional_debugging(with_debugger=args.launch_ipdb_on_error):
         collection_source=args.collection_name,
         satpy_product=args.product,
         area_definition=area_definition,
+    )
+
+    create_animation(
+        filepaths_images=scene_images_filepaths,
+        fp_out=fp_animation_out,
+        frame_duration=args.frame_duration,
     )

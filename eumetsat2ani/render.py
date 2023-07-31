@@ -2,6 +2,7 @@ import warnings
 import zipfile
 from pathlib import Path
 
+import imageio
 from loguru import logger
 from PIL import ImageDraw, ImageFont
 from satpy import Scene
@@ -134,3 +135,14 @@ def render_scenes(source_filepaths, collection_source, satpy_product, area_defin
         logger.info(f"Saved {fp_img}")
 
     return filepaths_images
+
+
+def create_animation(filepaths_images, fp_out, frame_duration):
+    with imageio.get_writer(
+        fp_out, mode="I", duration=frame_duration * 1000, loop=0
+    ) as writer:
+        for fp in filepaths_images:
+            image = imageio.imread(fp)
+            writer.append_data(image)
+
+    logger.info(f"Saved animation to {fp_out}")
