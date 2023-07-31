@@ -6,7 +6,13 @@ description = "Create animations directly from EUMETSAT data"
 authors = [
     {name = "Leif Denby", email = "lcd@dmi.dk"},
 ]
-dependencies = []
+dependencies = [
+    "eumdac>=2.0.1",
+    "setuptools>=68.0.0",
+    "loguru>=0.7.0",
+    "satpy>=0.43.0",
+    "isodate>=0.6.1",
+]
 requires-python = ">=3.9"
 readme = "README.md"
 license = {text = "MIT"}
@@ -14,3 +20,8 @@ license = {text = "MIT"}
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "ipdb>=0.13.13",
+]
