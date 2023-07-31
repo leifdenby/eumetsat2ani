@@ -24,4 +24,5 @@ build-backend = "pdm.backend"
 [tool.pdm.dev-dependencies]
 dev = [
     "ipdb>=0.13.13",
+    "pre-commit>=3.3.3",
 ]
