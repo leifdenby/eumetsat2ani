@@ -57,6 +57,12 @@ def download_source_files(
     root_data_path.mkdir(parents=True, exist_ok=True)
     logger.info(f"Found {len(products)} products")
     for product in products:
+        prod_identifier = product.metadata['properties']['identifier']
+        fp_local_guess = root_data_path / f"{prod_identifier}.zip"
+        if fp_local_guess.exists():
+            logger.info(f"Skipping {fp_local_guess} as it already exists")
+            continue
+
         with product.open() as fsrc:
             local_filepath = root_data_path / fsrc.name
             if local_filepath.exists():

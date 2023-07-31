@@ -1,0 +1,49 @@
+from pathlib import Path
+import argparse
+import isodate
+
+from .fetch import download_source_files
+from .render import render_scenes
+from .utils import optional_debugging
+from satpy.resample import get_area_def
+
+from loguru import logger
+
+class MyFormatter(argparse.ArgumentDefaultsHelpFormatter, argparse.MetavarTypeHelpFormatter):
+    pass
+
+argparser = argparse.ArgumentParser(formatter_class=MyFormatter)
+argparser.add_argument("--api-key", type=str, required=True, help="EUMETSAT API key")
+argparser.add_argument("--api-secret", type=str, required=True, help="EUMETSAT API secret")
+argparser.add_argument("--collection-name", type=str, default="EO:EUM:DAT:MSG:HRSEVIRI", help="EUMETSAT collection name")
+argparser.add_argument("--t-start", type=isodate.parse_datetime, default="2015-04-14T09:00:00", help="Start time")
+argparser.add_argument("--t-end", type=isodate.parse_datetime, default="2015-04-14T13:00:00", help="End time")
+argparser.add_argument("--area", type=str, default="euro", help="Area definition (using satpy's inbuilt area definitions)")
+argparser.add_argument("--root-data-path", type=Path, default="data", help="Root path to store downloaded data")
+argparser.add_argument("--product", type=str, default="natural_color", help="Satpy product to render")
+argparser.add_argument("--launch-ipdb-on-error", action="store_true", help="Launch ipdb on error")
+args = argparser.parse_args()
+
+with optional_debugging(with_debugger=args.launch_ipdb_on_error):
+    # load area definition from satpy
+    area_definition = get_area_def(args.area)
+
+    # filepaths = download_source_files(
+    #     api_key=args.api_key,
+    #     api_secret=args.api_secret,
+    #     area_definition=area_definition,
+    #     collection_name=args.collection_name,
+    #     root_data_path=args.root_data_path,
+    #     t_start=args.t_start,
+    #     t_end=args.t_end,
+    # )
+
+    filepaths = list(Path(args.root_data_path).glob("*.zip"))
+
+    logger.info(f"Rendering {args.product} for {len(filepaths)} scenes")
+    scene_images_filepaths = render_scenes(
+        source_filepaths=filepaths,
+        collection_source=args.collection_name,
+        satpy_product=args.product,
+        area_definition=area_definition,
+    )
